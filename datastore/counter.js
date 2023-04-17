@@ -38,9 +38,24 @@ const writeCounter = (count, callback) => {
 
 // Public API - Fix this function //////////////////////////////////////////////
 
-exports.getNextUniqueId = () => {
-  counter = counter + 1;
-  return zeroPaddedNumber(counter);
+exports.getNextUniqueId = (callback) => {
+  // counter = counter + 1;
+  // return zeroPaddedNumber(counter);
+
+  readCounter((err, count) => {
+    if (err) {
+      callback(err);
+    } else {
+      writeCounter(count + 1, (err, string) => {
+        // err ? callback(err) : callback(null, zeroPaddedNumber(string));
+        if (err) {
+          callback(err);
+        } else {
+          callback(null, zeroPaddedNumber(string));
+        }
+      });
+    }
+  });
 };
 
 
@@ -48,3 +63,35 @@ exports.getNextUniqueId = () => {
 // Configuration -- DO NOT MODIFY //////////////////////////////////////////////
 
 exports.counterFile = path.join(__dirname, 'counter.txt');
+
+
+/*
+
+fs.readFile(path, 'utf8', callback) {
+
+  if error occurs
+    callback(error)
+  else
+    callback(null, data of the file)
+}
+
+
+
+callback(error, data)
+
+fs.readFile(path, 'utf8', (err, data) => {
+  if (err) { console.log(error) }
+  else {
+    console.log(data)
+  }
+});
+
+*/
+
+// fs.writeFile('hello.txt', 'hello\nworld', (err) => {
+//   if (err) {
+//     console.log(err);
+//   } else {
+//     console.log('Successfully written to file');
+//   }
+// });
